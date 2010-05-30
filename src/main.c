@@ -2,24 +2,43 @@
 #include <stdio.h>
 #include "main.h"
 
-#define ACTION_MASK_SHUTDOWNNOW  0b000000000000001;
-#define ACTION_MASK_INVERTLED    0b000000000000010;
+#define TRUE  1
+#define FALSE 0
+
+#define ACTION_MASK_SHUTDOWNNOW  0b000000000000001
+#define ACTION_MASK_LEDINVERT    0b000000000000010
+
+int unsigned actionsToDo = 0;
+
+// TODO
+char LED = TRUE;
+
+interupt_ledFlash()
+{
+  actionsToDo = actionsToDo && ACTION_MASK_LEDINVERT;
+  
+  // reset interupt
+  //TODO
+}
+
+interupt_shutdown()
+{
+  // we want to finish what ever is in the queue in the main loop
+  // and then shutdown
+  
+  // kill all interupts to make sure now new events come in 
+  //TODO
+  
+  actionsToDo = actionsToDo && ACTION_MASK_SHUTDOWNNOW;
+  
+  // turn LED on to constant to let user know that it has been resived
+  LED = TRUE;
+}
  
 main(void)
 {
-  //SunSaveLogger_VERSION_MAJOR,
-  //SunSaveLogger_VERSION_MINOR);
-  
-  // TODO
-  bool LED;
-  
-  bool shutdown_now;
-  int unsigned actionsToDo;
-  
-  
-  LED = true;
-  shutdown_now = false;
-  actionsToDo = 0;
+  //SunSaveLogger_VERSION_MAJOR
+  //SunSaveLogger_VERSION_MINOR
   
   do
   {
@@ -30,21 +49,16 @@ main(void)
     {
       // test what action to do
       
-      // shutdown now
-      if( actionsToDo && ACTION_MASK_SHUTDOWNNOW )
-      {
-        // This action is to shutdown now safely
-        shutdown_now = true;
-      }
-      else if(actionsToDo && ACTION_MASK_INVERTLED )
+      if(actionsToDo && ACTION_MASK_LEDINVERT )
       {
         // This action is to invert the current LED status
         LED = ~LED;
-        actionsToDo = actionsToDo ^ACTION_MASK_INVERTLED;
+        actionsToDo = actionsToDo ^ ACTION_MASK_LEDINVERT;
       }
       
     }
-  
-  } while (!shutdown_now);
+ 
+  // this is only true with a shutdown intended AND no actions in the queue 
+  } while (actionsToDo != ACTION_MASK_SHUTDOWNNOW);
   
 }
