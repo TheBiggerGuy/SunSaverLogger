@@ -1,0 +1,3 @@
+// the configured options and settings for Tutorial
+#define SunSaveLogger_VERSION_MAJOR @SunSaveLogger_VERSION_MAJOR@
+#define SunSaveLogger_VERSION_MINOR @SunSaveLogger_VERSION_MINOR@
